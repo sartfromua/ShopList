@@ -2,10 +2,12 @@ package com.example.shoplist.presentation
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -48,9 +50,8 @@ class ShopItemAdapter:
         with(holder) {
             name.text = "${item.name} (activity: ${item.isActive})"
             count.text = item.count.toString()
-            if (item.isActive) {
-                cardView.setBackgroundColor(Color.MAGENTA)
-            } else cardView.setBackgroundColor(Color.DKGRAY)
+            cardView.findViewById<ImageView>(R.id.crossedImageView).visibility =  if (item.isActive) View.INVISIBLE
+            else View.VISIBLE
 
             cardView.setOnClickListener {
                 clickListener?.invoke(cardView, item)

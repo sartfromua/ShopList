@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, item.toString(), Toast.LENGTH_SHORT).show()
         }
 
-        adapter.longClickListener = { view: View, item: ShopItem->
+        adapter.clickListener = { view: View, item: ShopItem->
             try {
                 viewModel.toggleItemActivity(item) // FIXME
                 Log.d(TAG, "Trying to toggle item correct")
@@ -51,6 +51,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+//        adapter.longClickListener = {view: View, item: ShopItem ->
+//            try {
+//                intent
+//            }
+//        }
 
     }
 
