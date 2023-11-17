@@ -1,14 +1,17 @@
 package com.example.shoplist.presentation
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -51,12 +54,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        adapter.longClickListener = {view: View, item: ShopItem ->
-//            try {
-//                intent
-//            }
-//        }
+        adapter.swipeListener = {
+            viewModel.removeShopItem(it)
+        }
+        val itemTouchHelper = ItemTouchHelper(adapter.simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
+        adapter.longClickListener = {view: View, item: ShopItem ->
+            lunchEditItemActivity(item.id)
+        }
+
+        findViewById<ImageButton>(R.id.addItemButton).setOnClickListener {
+            lunchAddItemActivity()
+        }
+
+
+    }
+    private fun lunchAddItemActivity() {
+        val intent = Intent(this, AddItemActivity::class.java)
+        intent.putExtra(EXTRA_MODE, ADD_ITEM_MODE)
+        startActivity(intent)
+    }
+
+    private fun lunchEditItemActivity(itemId: Long) {
+        val intent = Intent(this, AddItemActivity::class.java)
+        intent.putExtra(EXTRA_MODE, EDIT_ITEM_MODE)
+        intent.putExtra(EXTRA_ITEM_ID, itemId)
+        startActivity(intent)
     }
 
     companion object {
