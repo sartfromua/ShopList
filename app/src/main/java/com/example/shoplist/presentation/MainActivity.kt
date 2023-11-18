@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.toggleItemActivity(item) // FIXME
                 Log.d(TAG, "Trying to toggle item correct")
             } catch (e: Exception) {
-                Log.d(TAG, "Trying to toggle item: ${e.message.toString()}")
+                Log.d(TAG, "Trying to toggle item FAILED: ${e.message.toString()}")
             }
         }
 

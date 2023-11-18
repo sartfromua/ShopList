@@ -6,7 +6,7 @@ import com.example.shoplist.domain.ShopItemRepository
 class GetShopItem (
     private val repository: ShopItemRepository
     ) {
-        fun addItem(id: Long): ShopItem {
+        fun getItem(id: Long): ShopItem {
             return repository.getItem(id)
         }
     }

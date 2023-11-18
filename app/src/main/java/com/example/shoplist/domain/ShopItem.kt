@@ -1,9 +1,9 @@
 package com.example.shoplist.domain
 
-class ShopItem(
+data class ShopItem(
     val name: String,
     val count: Int,
-    val isActive: Boolean,
+    val isActive: Boolean = true,
     var id: Long = UNDEFINED
 
 ) {

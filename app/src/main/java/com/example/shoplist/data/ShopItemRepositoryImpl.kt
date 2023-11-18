@@ -23,7 +23,6 @@ object ShopItemRepositoryImpl: ShopItemRepository {
                 ShopItem(
                     "Item_$i",
                     (i+1)%5,
-                    true
                 )
             )
         }
