@@ -4,14 +4,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoplist.R
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class AddItemActivity : AppCompatActivity() {
 
-//    lateinit var inputNameLayout: TextInputLayout
-//    lateinit var inputCountLayout: TextInputLayout
+    lateinit var inputNameLayout: TextInputLayout
+    lateinit var inputCountLayout: TextInputLayout
 
     lateinit var editName: TextInputEditText
     lateinit var editCount: TextInputEditText
@@ -24,26 +26,25 @@ class AddItemActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_item)
 
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-
         initViews()
-        Log.d("XXXXX","Before parseIntent")
+//        Log.d("XXXXX","Before parseIntent")
         parseIntent()
-        Log.d("XXXXX","After parseIntent")
+//        Log.d("XXXXX","After parseIntent")
         registerLiveData()
     }
 
     private fun initViews() {
-//        inputNameLayout = findViewById(R.id.input_name)
-//        inputCountLayout = findViewById(R.id.input_count)
+        inputNameLayout = findViewById(R.id.input_name)
+        inputCountLayout = findViewById(R.id.input_count)
 
         editName = findViewById(R.id.edit_text_name)
-//        editName.addTextChangedListener {
-//            inputNameLayout.error = null
-//        }
+        editName.addTextChangedListener {
+            inputNameLayout.error = null
+        }
         editCount = findViewById(R.id.edit_text_count)
-//        editCount.addTextChangedListener {
-//            inputCountLayout.error = null
-//        }
+        editCount.addTextChangedListener {
+            inputCountLayout.error = null
+        }
 
         saveButton = findViewById(R.id.buttonSave)
 
@@ -51,9 +52,9 @@ class AddItemActivity : AppCompatActivity() {
 
     private fun lunchActivityForAdd() {
         saveButton.setOnClickListener {
-            Log.d(TAG, "saveButton addItem: ${editName.text}, ${editCount.text}")
+//            Log.d(TAG, "saveButton addItem: ${editName.text}, ${editCount.text}")
             viewModel.addItem(editName.text, editCount.text)
-            onBackPressed()
+//            onBackPressed()
         }
     }
 
@@ -62,7 +63,7 @@ class AddItemActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener {
             viewModel.editItem(editName.text, editCount.text)
-            onBackPressed()
+//            onBackPressed()
         }
     }
 
@@ -71,7 +72,7 @@ class AddItemActivity : AppCompatActivity() {
     private fun parseIntent() {
         if (intent.hasExtra(EXTRA_MODE)) {
             mode = intent.getStringExtra(EXTRA_MODE) ?: UNDEFINED_MODE
-            Log.d(TAG, "parseItem: mode: $mode")
+//            Log.d(TAG, "parseItem: mode: $mode")
             if (mode == ADD_ITEM_MODE) {
                 lunchActivityForAdd()
             }
@@ -86,6 +87,18 @@ class AddItemActivity : AppCompatActivity() {
         viewModel.itemLiveData.observe(this) {
             editName.setText(it.name)
             editCount.setText(it.count.toString())
+        }
+
+        viewModel.errorNameLD.observe(this) {
+            if (it) inputNameLayout.error = getString(R.string.name_error)
+        }
+
+        viewModel.errorCountLD.observe(this) {
+            if (it) inputCountLayout.error = getString(R.string.count_error)
+        }
+
+        viewModel.finishActivityLD.observe(this) {
+            onBackPressed()
         }
     }
 

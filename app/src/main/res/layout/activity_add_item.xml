@@ -4,18 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.AddItemActivity">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription=" "
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/notebook" />
+    tools:context=".presentation.AddItemActivity"
+    android:background="@drawable/notebook">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_name"
@@ -33,16 +23,19 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_text_name"
+            style="@style/notebook_cursive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
             android:inputType="textCapWords"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:textSize="20sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_count"
+        style="@style/notebook_cursive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -56,11 +49,13 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_text_count"
+            style="@style/notebook_cursive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/count"
             android:inputType="number"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:textSize="20sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

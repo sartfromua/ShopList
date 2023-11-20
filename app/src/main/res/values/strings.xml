@@ -3,4 +3,6 @@
     <string name="save">Save</string>
     <string name="count">Count</string>
     <string name="name">Name</string>
+    <string name="name_error">Wrong name</string>
+    <string name="count_error">Wrong count</string>
 </resources>
