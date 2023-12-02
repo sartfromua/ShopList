@@ -11,60 +11,24 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class AddItemActivity : AppCompatActivity() {
-
-    lateinit var inputNameLayout: TextInputLayout
-    lateinit var inputCountLayout: TextInputLayout
-
-    lateinit var editName: TextInputEditText
-    lateinit var editCount: TextInputEditText
-
-    lateinit var saveButton: Button
-
-    lateinit var viewModel: ShopItemViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_item)
 
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews()
-//        Log.d("XXXXX","Before parseIntent")
         parseIntent()
+//        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+//        initViews()
+//        Log.d("XXXXX","Before parseIntent")
 //        Log.d("XXXXX","After parseIntent")
-        registerLiveData()
+//        registerLiveData()
     }
 
-    private fun initViews() {
-        inputNameLayout = findViewById(R.id.input_name)
-        inputCountLayout = findViewById(R.id.input_count)
-
-        editName = findViewById(R.id.edit_text_name)
-        editName.addTextChangedListener {
-            inputNameLayout.error = null
-        }
-        editCount = findViewById(R.id.edit_text_count)
-        editCount.addTextChangedListener {
-            inputCountLayout.error = null
-        }
-
-        saveButton = findViewById(R.id.buttonSave)
-
-    }
-
-    private fun lunchActivityForAdd() {
-        saveButton.setOnClickListener {
-//            Log.d(TAG, "saveButton addItem: ${editName.text}, ${editCount.text}")
-            viewModel.addItem(editName.text, editCount.text)
-//            onBackPressed()
-        }
-    }
-
-    private fun lunchActivityForEdit(){
-        viewModel.getItem(itemId)
-
-        saveButton.setOnClickListener {
-            viewModel.editItem(editName.text, editCount.text)
-//            onBackPressed()
-        }
+    fun setupFragment(fragment: ShopItemFragment) {
+//        Log.d("XXXXX", "fragment args: ${fragment.arguments.toString()}")
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.shop_item_fragment_container, fragment)
+            .commit()
     }
 
     private var mode: String = UNDEFINED_MODE
@@ -73,34 +37,21 @@ class AddItemActivity : AppCompatActivity() {
         if (intent.hasExtra(EXTRA_MODE)) {
             mode = intent.getStringExtra(EXTRA_MODE) ?: UNDEFINED_MODE
 //            Log.d(TAG, "parseItem: mode: $mode")
-            if (mode == ADD_ITEM_MODE) {
-                lunchActivityForAdd()
+            when (mode) {
+                ADD_ITEM_MODE -> {
+//                    Log.d("XXXXX", "Intent: ADD_ITEM_MODE")
+                    setupFragment(ShopItemFragment.newInstanceFragmentAdd())
+                }
+                EDIT_ITEM_MODE -> {
+                    itemId = intent.getLongExtra(EXTRA_ITEM_ID, UNDEFINED_ID)
+                    setupFragment(ShopItemFragment.newInstanceFragmentEdit(itemId))
+                }
+                else -> throw IllegalArgumentException("Wrong MODE in intent AddItemActivity!")
             }
-            if (mode == EDIT_ITEM_MODE) {
-                itemId = intent.getLongExtra(EXTRA_ITEM_ID, UNDEFINED_ID)
-                lunchActivityForEdit()
-            }
-        }
+        } else throw IllegalArgumentException("No MODE in intent AddItemActivity!")
     }
 
-    private fun registerLiveData() {
-        viewModel.itemLiveData.observe(this) {
-            editName.setText(it.name)
-            editCount.setText(it.count.toString())
-        }
 
-        viewModel.errorNameLD.observe(this) {
-            if (it) inputNameLayout.error = getString(R.string.name_error)
-        }
-
-        viewModel.errorCountLD.observe(this) {
-            if (it) inputCountLayout.error = getString(R.string.count_error)
-        }
-
-        viewModel.finishActivityLD.observe(this) {
-            onBackPressed()
-        }
-    }
 
     companion object {
         val TAG = "XXXXX"

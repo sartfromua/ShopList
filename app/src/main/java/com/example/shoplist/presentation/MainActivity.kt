@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.addItemButton).setOnClickListener {
+            Log.d("XXXXX", "Lunching AddItemActivity")
             lunchAddItemActivity()
         }
 
