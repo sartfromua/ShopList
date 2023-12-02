@@ -15,7 +15,8 @@ class AddItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_item)
 
-        parseIntent()
+        if (savedInstanceState == null)
+            parseIntent()
 //        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
 //        initViews()
 //        Log.d("XXXXX","Before parseIntent")
@@ -23,13 +24,15 @@ class AddItemActivity : AppCompatActivity() {
 //        registerLiveData()
     }
 
-    fun setupFragment(fragment: ShopItemFragment) {
+    private fun setupFragment(fragment: ShopItemFragment) {
 //        Log.d("XXXXX", "fragment args: ${fragment.arguments.toString()}")
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.shop_item_fragment_container, fragment)
             .commit()
     }
+
+
 
     private var mode: String = UNDEFINED_MODE
     private var itemId: Long = UNDEFINED_ID

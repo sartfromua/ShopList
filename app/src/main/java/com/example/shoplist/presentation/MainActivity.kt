@@ -6,27 +6,40 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.shoplist.R
+import com.example.shoplist.databinding.ActivityMainBinding
 import com.example.shoplist.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
-    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ShopItemAdapter
+
+    lateinit var binding: ActivityMainBinding
+
+    val isPortrait: Boolean
+        get() = binding.shopItemFragmentContainerLandscape == null
+    private fun setupFragment(fragment: ShopItemFragment) {
+//        Log.d("XXXXX", "fragment args: ${fragment.arguments.toString()}")
+        supportFragmentManager.popBackStack()
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.shop_item_fragment_container_landscape, fragment)
+            .commit()
+    }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.liveData.observe(this) {
@@ -36,11 +49,9 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "getShopItemList: ${viewModel.getShopItemList().value}" )
 
-        recyclerView = findViewById(R.id.recyclerView)
-//        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         adapter = ShopItemAdapter()
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         adapter.clickListener = { view: View, item: ShopItem ->
             Toast.makeText(this@MainActivity, item.toString(), Toast.LENGTH_SHORT).show()
         }
@@ -58,15 +69,23 @@ class MainActivity : AppCompatActivity() {
             viewModel.removeShopItem(it)
         }
         val itemTouchHelper = ItemTouchHelper(adapter.simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
 
         adapter.longClickListener = {view: View, item: ShopItem ->
-            lunchEditItemActivity(item.id)
+            if (isPortrait) {
+                lunchEditItemActivity(item.id)
+            } else {
+                setupFragment(ShopItemFragment.newInstanceFragmentEdit(item.id))
+            }
         }
 
-        findViewById<ImageButton>(R.id.addItemButton).setOnClickListener {
+        binding.addItemButton.setOnClickListener {
             Log.d("XXXXX", "Lunching AddItemActivity")
+            if (isPortrait) {
             lunchAddItemActivity()
+            } else {
+                setupFragment(ShopItemFragment.newInstanceFragmentAdd())
+            }
         }
 
 

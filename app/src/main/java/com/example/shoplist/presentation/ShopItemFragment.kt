@@ -10,6 +10,8 @@ import android.widget.Button
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoplist.R
+import com.example.shoplist.databinding.ActivityMainBinding
+import com.example.shoplist.databinding.FragmentShopItemBinding
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.lang.IllegalArgumentException
@@ -21,19 +23,21 @@ class ShopItemFragment() : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_shop_item, container, false)
+    ): View {
+        binding = FragmentShopItemBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private lateinit var inputNameLayout: TextInputLayout
-    private lateinit var inputCountLayout: TextInputLayout
-
-    private lateinit var editName: TextInputEditText
-    private lateinit var editCount: TextInputEditText
-
-    private lateinit var saveButton: Button
-
+//    private lateinit var inputNameLayout: TextInputLayout
+//    private lateinit var inputCountLayout: TextInputLayout
+//
+//    private lateinit var editName: TextInputEditText
+//    private lateinit var editCount: TextInputEditText
+//
+//    private lateinit var saveButton: Button
+//
     private lateinit var viewModel: ShopItemViewModel
+    lateinit var binding: FragmentShopItemBinding
 
     private var mode: String = UNDEFINED_MODE
     private var itemID: Long = UNDEFINED_ID
@@ -42,7 +46,7 @@ class ShopItemFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews(view)
+        initViews()
         setupMode()
         registerLiveData()
     }
@@ -64,19 +68,15 @@ class ShopItemFragment() : Fragment() {
     }
 
 
-        private fun initViews(view: View) {
-        inputNameLayout = view.findViewById(R.id.input_name)
-        inputCountLayout = view.findViewById(R.id.input_count)
-
-        editName = view.findViewById(R.id.edit_text_name)
-        editName.addTextChangedListener {
-            inputNameLayout.error = null
+        private fun initViews() {
+        with (binding) {
+            editTextName.addTextChangedListener {
+                inputName.error = null
+            }
+            editTextCount.addTextChangedListener {
+                inputCount.error = null
+            }
         }
-        editCount = view.findViewById(R.id.edit_text_count)
-        editCount.addTextChangedListener {
-            inputCountLayout.error = null
-        }
-        saveButton = view.findViewById(R.id.buttonSave)
 
     }
 
@@ -89,36 +89,41 @@ class ShopItemFragment() : Fragment() {
     }
 
     private fun setupAdd() {
-        saveButton.setOnClickListener {
-            viewModel.addItem(editName.text, editCount.text)
+        with (binding) {
+            buttonSave.setOnClickListener {
+                viewModel.addItem(editTextName.text, editTextCount.text)
+            }
         }
     }
 
     private fun setupEdit() {
         viewModel.getItem(itemID)
-
-        saveButton.setOnClickListener {
-            viewModel.editItem(editName.text, editCount.text)
+        with (binding) {
+            buttonSave.setOnClickListener {
+                viewModel.editItem(editTextName.text, editTextCount.text)
+            }
         }
     }
 
     private fun registerLiveData() {
-    viewModel.itemLiveData.observe(viewLifecycleOwner) {
-        editName.setText(it.name)
-        editCount.setText(it.count.toString())
-    }
+        with (binding) {
+            viewModel.itemLiveData.observe(viewLifecycleOwner) {
+                editTextName.setText(it.name)
+                editTextCount.setText(it.count.toString())
+            }
 
-    viewModel.errorNameLD.observe(viewLifecycleOwner) {
-        if (it) inputNameLayout.error = getString(R.string.name_error)
-    }
+            viewModel.errorNameLD.observe(viewLifecycleOwner) {
+                if (it) inputName.error = getString(R.string.name_error)
+            }
 
-    viewModel.errorCountLD.observe(viewLifecycleOwner) {
-        if (it) inputCountLayout.error = getString(R.string.count_error)
-    }
+            viewModel.errorCountLD.observe(viewLifecycleOwner) {
+                if (it) inputCount.error = getString(R.string.count_error)
+            }
 
-    viewModel.finishActivityLD.observe(viewLifecycleOwner) {
-        activity?.onBackPressed() // FIXME:
-    }
+            viewModel.finishActivityLD.observe(viewLifecycleOwner) {
+                activity?.onBackPressed() // FIXME:
+            }
+        }
     }
 
     companion object {
