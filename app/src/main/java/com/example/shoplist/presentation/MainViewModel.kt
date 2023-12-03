@@ -1,16 +1,20 @@
 package com.example.shoplist.presentation
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.example.shoplist.data.ShopItemRepositoryImpl
+import androidx.lifecycle.viewModelScope
+import com.example.shoplist.data.DataBaseRepository
 import com.example.shoplist.domain.ShopItem
 import com.example.shoplist.domain.usecase.EditShopItem
 import com.example.shoplist.domain.usecase.GetShopItemList
 import com.example.shoplist.domain.usecase.RemoveShopItem
+import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel() {
-    private val repository = ShopItemRepositoryImpl // FIXME: placeholder for demo
+class MainViewModel(application: Application): AndroidViewModel(application) {
+
+    private val repository = DataBaseRepository(application)
 
     private val getShopItemListUseCase = GetShopItemList(repository)
     private val editShopItemUseCase = EditShopItem(repository)
@@ -25,14 +29,15 @@ class MainViewModel: ViewModel() {
     }
 
     fun toggleItemActivity(item: ShopItem) {
-        Log.d("XXXXX", getShopItemList().value.toString())
-        val newItem  = ShopItem(item.name, item.count, !item.isActive, item.id)
-        Log.d("XXXXX", newItem.toString())
-        editShopItemUseCase.editItem(newItem)
-        Log.d("XXXXX", getShopItemList().value.toString())
+        viewModelScope.launch {
+            val newItem = item.copy(isActive = !item.isActive)
+            editShopItemUseCase.editItem(newItem)
+        }
     }
 
     fun removeShopItem(item: ShopItem) {
-        removeShopItemListUseCase.removeItem(item)
+        viewModelScope.launch {
+            removeShopItemListUseCase.removeItem(item)
+        }
     }
 }

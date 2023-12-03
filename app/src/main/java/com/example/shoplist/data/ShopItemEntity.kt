@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.shoplist.presentation.UNDEFINED_ID
 
-@Entity(tableName = "item_name")
+@Entity(tableName = "item_table")
 data class ShopItemEntity (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_item")

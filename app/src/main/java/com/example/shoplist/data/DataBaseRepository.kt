@@ -8,15 +8,15 @@ import com.example.shoplist.domain.ShopItemRepository
 
 class DataBaseRepository(context: Context) : ShopItemRepository {
     private val dao = ShopItemDB.getInstance(context).getDao()
-    override fun addItem(item: ShopItem) {
+    override suspend fun addItem(item: ShopItem) {
         dao.addShopItem(ShopItemMapper.shopItemToEntity(item))
     }
 
-    override fun editItem(item: ShopItem) {
+    override suspend fun editItem(item: ShopItem) {
         dao.editShopItem(ShopItemMapper.shopItemToEntity(item))
     }
 
-    override fun getItem(id: Long): ShopItem {
+    override suspend fun getItem(id: Long): ShopItem {
         val entity = dao.getItem(id)
         return ShopItemMapper.entityToShopItem(entity)
     }
@@ -30,7 +30,7 @@ class DataBaseRepository(context: Context) : ShopItemRepository {
         return liveData
     }
 
-    override fun removeItem(item: ShopItem) {
+    override suspend fun removeItem(item: ShopItem) {
         dao.removeShopItem(ShopItemMapper.shopItemToEntity(item))
     }
 }

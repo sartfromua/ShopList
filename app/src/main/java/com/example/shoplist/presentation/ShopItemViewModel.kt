@@ -1,18 +1,21 @@
 package com.example.shoplist.presentation
 
+import android.app.Application
 import android.text.Editable
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.shoplist.data.ShopItemRepositoryImpl
+import androidx.lifecycle.viewModelScope
+import com.example.shoplist.data.DataBaseRepository
 import com.example.shoplist.domain.ShopItem
 import com.example.shoplist.domain.usecase.AddShopItem
 import com.example.shoplist.domain.usecase.EditShopItem
 import com.example.shoplist.domain.usecase.GetShopItem
+import kotlinx.coroutines.launch
 
-class ShopItemViewModel: ViewModel() {
-    private val repository = ShopItemRepositoryImpl
+class ShopItemViewModel(application: Application): AndroidViewModel(application) {
+    private val repository = DataBaseRepository(application)
 
     private val editShopItemUseCase = EditShopItem(repository)
     private val addShopItemUseCase = AddShopItem(repository)
@@ -58,8 +61,10 @@ class ShopItemViewModel: ViewModel() {
     }
 
     fun getItem(id: Long) {
-        val shopItem = getShopItemUseCase.getItem(id)
-        _itemLiveData.value = shopItem
+        viewModelScope.launch {
+            val shopItem = getShopItemUseCase.getItem(id)
+            _itemLiveData.value = shopItem
+        }
     }
 
     fun addItem(inputName: Editable?, inputCount: Editable?) {
@@ -73,9 +78,11 @@ class ShopItemViewModel: ViewModel() {
 
         if (validateData(name, count)) {
 //            Log.d(AddItemActivity.TAG, "ShopItemViewModel addItem: $name, $count")
-            val item = ShopItem(name, count)
-            addShopItemUseCase.addItem(item)
-            _finishActivityLD.value = Unit
+            viewModelScope.launch {
+                val item = ShopItem(name, count)
+                addShopItemUseCase.addItem(item)
+                _finishActivityLD.value = Unit
+            }
         }
     }
     fun editItem(inputName: Editable?, inputCount: Editable?) {
@@ -86,8 +93,10 @@ class ShopItemViewModel: ViewModel() {
 
         if (validateData(name, count)) {
             item?.let {
+                viewModelScope.launch {
                 val itemShop = it.copy(name = name, count = count)
                 editShopItemUseCase.editItem(itemShop)
+                }
                 _finishActivityLD.value = Unit
             }
         }

@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'com.example.shoplist'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.shoplist"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -56,6 +56,9 @@ dependencies {
     kapt "androidx.room:room-compiler:2.5.0" // Кодогенератор
     implementation 'androidx.room:room-ktx:2.5.0' // Дополнительно для Kotlin Coroutines, Kotlin Flows
 
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.6.2"
 
 
 }

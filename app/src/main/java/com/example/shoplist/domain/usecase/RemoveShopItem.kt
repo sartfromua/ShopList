@@ -6,7 +6,7 @@ import com.example.shoplist.domain.ShopItemRepository
 class RemoveShopItem (
     private val repository: ShopItemRepository
 ) {
-    fun removeItem(item: ShopItem) {
+    suspend fun removeItem(item: ShopItem) {
         repository.removeItem(item)
     }
 }

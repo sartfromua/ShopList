@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             adapter.shopItems = it
         }
 
-        Log.d(TAG, "getShopItemList: ${viewModel.getShopItemList().value}" )
+        Log.d(TAG, "getShopItemList: ${viewModel.liveData.value}" )
 
 
         adapter = ShopItemAdapter()
